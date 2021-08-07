@@ -1,19 +1,71 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "target": "ES2020",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
+    "downlevelIteration": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "baseUrl": ".",
+    "paths": {
+      "@components/*": [
+        "src/components/*"
+      ],
+      "@pages/*": [
+        "src/pages/*"
+      ],
+      "@api/*": [
+        "src/api/*"
+      ],
+      "@reducers": [
+        "src/redux/reducers/index.ts"
+      ],
+      "@actions": [
+        "src/redux/actions/index.ts"
+      ],
+      "@constants": [
+        "src/redux/constants/index.ts"
+      ],
+      "@initialstate": [
+        "src/redux/initialState.ts"
+      ],
+      "@store": [
+        "src/redux/store.ts"
+      ],
+      "@styles/*": [
+        "src/styles/*"
+      ],
+      "@types": [
+        "src/types/types.ts"
+      ],
+      "@interfaces": [
+        "src/types/interfaces.ts"
+      ],
+      "@lib/*": [
+        "src/lib/*"
+      ],
+    }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "globals.d.ts",
+    "intersection-observer.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
