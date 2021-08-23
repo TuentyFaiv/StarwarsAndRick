@@ -11,26 +11,19 @@ export class CharacterHttp extends BaseHttp {
     try {
       const allCharactersData = await this.http(`${this.path}?page=${page}`, this.type);
       const characters = await allCharactersData;
-
       if (this.type === "star") {
         const charactersFormated: GetAllCharacters = {
-          count: characters.total_records,
+          count: characters.count,
           previous: characters.previous,
           next: characters.next,
-          results: await Promise.all(characters.results.map(async (character: any) => {
-            const id = character.url.split("/")[5];
-            const characterCompleteRespose = await this.http(`${this.path}/${id}`, this.type);
-            const characterComplete = await characterCompleteRespose.result.properties;
-            return {
-              id,
-              name: characterComplete.name,
-              height: characterComplete.height,
-              weight: characterComplete.mass,
-              birthday: characterComplete.birth_year,
-            }
+          results: characters.results.map((character: any) => ({
+            id: character.url.split("/")[5],
+            name: character.name,
+            height: character.height,
+            weight: character.mass,
+            birthday: character.birth_year,
           }))
         };
-  
         return charactersFormated;
       }
 
@@ -62,10 +55,9 @@ export class CharacterHttp extends BaseHttp {
     const idCharacter = id;
     try {
       const characterRespose = await this.http(`${this.path}/${idCharacter}`, this.type);
+      const character = await characterRespose;
 
-      if (this.type === "star") {
-        const character = await characterRespose.result.properties;
-  
+      if (this.type === "star") {  
         const characterFormated: Character = {
           id: character.url.split("/")[5],
           name: character.name,
@@ -79,7 +71,6 @@ export class CharacterHttp extends BaseHttp {
   
         return characterFormated;
       }
-      const character = await characterRespose;
 
       const characterFormatedFromRick: Character = {
         id: character.id,
@@ -111,14 +102,9 @@ export class CharacterHttp extends BaseHttp {
     try {
       const planetPath = [planetUrl.split("/")[4], planetUrl.split("/")[5]].join("/");
       const planetResponse = await this.http(`${planetPath}/`, this.type);
+      const planet = await planetResponse;
 
-      if (this.type === "star") {
-        const planet = await planetResponse.result.properties;
-  
-        return planet;
-      }
-      const planetFromRick = await planetResponse;
-      return planetFromRick;
+      return planet;
     } catch (error) {
       return error.message;
     }

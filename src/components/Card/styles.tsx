@@ -2,7 +2,8 @@ import styled, { css } from "styled-components";
 import Link from "next/link";
 
 type CLProps = {
-  nested?: boolean
+  nested?: boolean;
+  simple?: boolean;
 }
 
 export const CardContainer = styled.article`
@@ -29,6 +30,12 @@ export const CardList = styled.ul<CLProps>`
       grid-template-columns: 1fr 1fr;
       column-gap: 20px;
       row-gap: 20px;
+    }
+  `}
+  ${({ simple }) => simple && css`
+    grid-template-columns: 100%;
+    @media screen and (min-width: 426px) {
+      grid-template-columns: 100%;
     }
   `}
 `;

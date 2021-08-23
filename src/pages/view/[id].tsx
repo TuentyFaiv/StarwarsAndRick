@@ -72,12 +72,9 @@ const IndividualView: FC<Props> = ({ getCharacters, getStarships, api, addFavori
       const { movies: noHasmovies, ...data } = await starshipData;
       setStarship({ ...data, movies: noHasmovies });
 
-      if (!apiValidation) {
-        getStarships.getFilms(noHasmovies, "characters").then((movies) => {
-          setStarship({ ...data, movies, loading: false });
-        });
-        setStarship({ ...data, movies: noHasmovies, loading: false });
-      }
+      getStarships.getFilms(noHasmovies, !apiValidation ? "characters" : "films").then((movies) => {
+        setStarship({ ...data, movies, loading: false });
+      });
     } else {
       setCharacter({ ...character, loading: true });
       const characterData = await getCharacters.getOne(id);
@@ -88,16 +85,8 @@ const IndividualView: FC<Props> = ({ getCharacters, getStarships, api, addFavori
         setCharacter({ ...data, planet: planetName, movies: noHasmovies });
         return planetName;
       }).then((planetResponse) => {
-        if (!apiValidation) {
-          getCharacters.getFilms(noHasmovies, "episodes").then((movies) => {
-            setCharacter({ ...data, movies, planet: planetResponse, loading: false });
-          });
-        }
-        setCharacter({
-          ...data,
-          movies: noHasmovies,
-          planet: planetResponse,
-          loading: false
+        getCharacters.getFilms(noHasmovies, !apiValidation ? "episodes" : "films").then((movies) => {
+          setCharacter({ ...data, movies, planet: planetResponse, loading: false });
         });
       });
     }

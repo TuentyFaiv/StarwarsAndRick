@@ -23,9 +23,10 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 type Props = PropsFromRedux & {
   item: ItemCard;
   type: ItemType;
+  simple?: boolean;
 }
 
-const Card: FC<Props> = ({ item, type, api }) => {
+const Card: FC<Props> = ({ item, type, api, simple = false }) => {
   const cardRef = useRef<HTMLElement|null>(null);
   const [show, setShow] = useState(false);
   const typeValidation = type === "character";
@@ -89,8 +90,8 @@ const Card: FC<Props> = ({ item, type, api }) => {
             {item.movies && (
               <CardText>
                 <strong>{apiValidation ? "Characters" : "Movies"}:</strong>
-                <CardList nested >
-                  {[...item.movies]?.splice(1, 5).map((movie) => (
+                <CardList nested simple={simple}>
+                  {[...item.movies]?.splice(0, 5).map((movie) => (
                     <CardText key={movie}>{movie}</CardText>
                   ))}
                 </CardList>

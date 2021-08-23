@@ -11,9 +11,7 @@ export class BaseHttp {
   public async getFilms(filmsUrls: string[], type: FilmsType = "films") {
     try {
       const typeValidation = type === "films";
-      const filmsUrlsFormated = filmsUrls.map((url) => {
-        return [url.split("/")[4], url.split("/")[5]].join("/")
-      });
+      const filmsUrlsFormated = filmsUrls.map((url) => ([url.split("/")[4], url.split("/")[5]].join("/")));
       const films = await Promise.all(filmsUrlsFormated.map((url) => (
         this.http(url, typeValidation ? "star" : "rick")
       )));

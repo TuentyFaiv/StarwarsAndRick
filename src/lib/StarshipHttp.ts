@@ -11,25 +11,26 @@ export class StarshipHttp extends BaseHttp{
     try {
       const allStarshipsData = await this.http(`${this.path}?page=${page}`, this.type);
       const starships = await allStarshipsData;
+
       if (this.type === "star") {
         const starshipsFormated: GetAllStarships = {
-          count: starships.total_records,
+          count: starships.count,
           previous: starships.previous,
           next: starships.next,
-          results: await Promise.all(starships.results.map(async (starships: any) => {
-            const id = starships.url.split("/")[5];
-            const movies = await this.getFilms(starships.films);
-            const starshipResponse = await this.http(`${this.path}/${id}`, this.type);
-            const starship = await starshipResponse.result.properties;
+          results: await Promise.all(starships.results.map(async (starship: any) => {
+            const id = starship.url.split("/")[5];
+            const moviesRequest = await this.getFilms([...starship.films].splice(0, 1));
+            const movies = await moviesRequest;
+
             return {
               id,
               name: starship.name,
               model: starship.model,
               creditsCost: starship.cost_in_credits,
               cargoCapacity: starship.cargo_capacity,
-              movies: starships.films ? await movies : ["No has data"],
+              movies
             };
-          })) as Starship[]
+          }))
         };
 
         return starshipsFormated;
@@ -39,16 +40,15 @@ export class StarshipHttp extends BaseHttp{
         count: starships.info.count,
         previous: starships.info.prev,
         next: starships.info.next,
-        results: starships.results.map((episode: any) => ({
+        results: await Promise.all(starships.results.map(async (episode: any) => ({
           id: episode.id,
           name: episode.name,
           model: `${episode.episode} | ${episode.air_date}`,
           creditsCost: null,
           cargoCapacity: null,
-          movies: ["No show characters at this moment"],
-        }))
+          movies: await this.getFilms([...episode.characters].splice(0, 2), "characters") || ["No show characters at this moment"]
+        })))
       };
-      // const characters = await this.getFilms(episode.characters.splice(1, 3), "characters");
 
       return starshipsFormatedFromRick;
     } catch (error) {
@@ -65,10 +65,9 @@ export class StarshipHttp extends BaseHttp{
     const idStarship = id;
     try {
       const starshipResponse = await this.http(`${this.path}/${idStarship}`, this.type);
+      const starship = await starshipResponse;
 
       if (this.type === "star") {
-        const starship = await starshipResponse.result.properties;
-  
         const starshipFormated: Starship = {
           id: starship.url.split("/")[5],
           name: starship.name,
@@ -84,17 +83,16 @@ export class StarshipHttp extends BaseHttp{
         return starshipFormated;
       }
 
-      const episode = await starshipResponse;
       const starshipFormatedFromRick: Starship = {
-        id: episode.id,
-        name: episode.name,
-        model: `${episode.episode} | ${episode.air_date}`,
+        id: starship.id,
+        name: starship.name,
+        model: `${starship.episode} | ${starship.air_date}`,
         manufacturer: "No has value",
         creditsCost: "No has value",
         width: "No has value",
         passengers: "No has value",
         cargoCapacity: "No has value",
-        movies: episode.characters
+        movies: starship.characters
       };
 
       return starshipFormatedFromRick;

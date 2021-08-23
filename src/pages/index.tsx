@@ -53,14 +53,12 @@ const Home: FC<Props> = ({ getCharacters, getStarships, api }) => {
   const handleGetData = useCallback(async () => {
     if (tabValidation) {
       if (dataCharacters.next !== null) {
-        const page = apiValidation
-          ? dataCharacters.next.split("=")[1]
-          : `${dataCharacters.next.split("&")[0].split("=")[1] || "1"}&limit=10`;
+        const page = dataCharacters.next.split("=")[1];
 
         setDataCharacters({ ...dataCharacters, loading: true });
         const characters = await getCharacters.getAll(page);
         const { results, ...allCharacters } = await characters;
-        
+
         setDataCharacters({
           ...allCharacters,
           results: [...dataCharacters.results, ...results],
@@ -69,9 +67,7 @@ const Home: FC<Props> = ({ getCharacters, getStarships, api }) => {
       }
     } else {
       if (dataStarships.next !== null) {
-        const page = apiValidation
-          ? dataStarships.next.split("=")[1]
-          : `${dataStarships.next.split("&")[0].split("=")[1] || "1"}&limit=10`;
+        const page = dataStarships.next.split("=")[1];
 
         setDataStarships({ ...dataStarships, loading: true });
         const starships = await getStarships.getAll(page);
@@ -164,6 +160,7 @@ const Home: FC<Props> = ({ getCharacters, getStarships, api }) => {
                       key={`${starship.id}-${starship.name}`}
                       item={itemCard}
                       type="starship"
+                      simple
                     />
                   );
                 })
